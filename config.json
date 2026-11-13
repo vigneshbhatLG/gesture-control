@@ -1,0 +1,119 @@
+{
+  "gestureEnabled": true,
+  "gestureSensitivity": 3,
+  "gestureCooldownMs": 500,
+  "gestureMap": {
+    "g_a34054": "volumeUp",
+    "g_6def2f": "volumeDown",
+    "g_6efb5e": "exitPointer"
+  },
+  "camera": {
+    "index": 1,
+    "backend": "dshow",
+    "width": 320,
+    "height": 240,
+    "mirror": true
+  },
+  "roi": {
+    "x": 0.63,
+    "y": 0.08,
+    "w": 0.35,
+    "h": 0.65
+  },
+  "hands": {
+    "model": "models/hand_landmarker.task",
+    "maxHands": 1,
+    "minDetectionConf": 0.6,
+    "minPresenceConf": 0.5,
+    "minTrackingConf": 0.5,
+    "swapHandedness": true
+  },
+  "gestures": {
+    "file": "gestures.json",
+    "samplesPerGesture": 5,
+    "sampleIntervalMs": 1200,
+    "mirrorLeftHand": true,
+    "matchThreshold": 0.25,
+    "consistencyMax": 0.2,
+    "distinctMin": 0.3
+  },
+  "trigger": {
+    "armHoldMs": 1000,
+    "armTimeoutMs": 30000,
+    "disarmHoldMs": 500,
+    "holdMs": 500,
+    "dropoutMs": 150,
+    "repeatWhileHeld": false,
+    "repeatMs": 250
+  },
+  "pointer": {
+    "enabled": true,
+    "moveRealCursor": true,
+    "realClick": true,
+    "logGaps": true,
+    "pressFrames": 2,
+    "notPointingExitMs": 300,
+    "activateMs": 300,
+    "exitMs": 600,
+    "requireArmed": true,
+    "pressGap": 0.3,
+    "releaseGap": 0.6,
+    "scroll": {
+      "enabled": true,
+      "deadzone": 0.15,
+      "maxOffset": 0.8,
+      "maxNotchesPerSec": 12,
+      "axisLock": true,
+      "minCutoff": 1.5,
+      "beta": 0.5
+    },
+    "adaptive": {
+      "enabled": true,
+      "pressRatio": 0.5,
+      "releaseRatio": 0.75,
+      "openFloor": 0.5,
+      "openPercentile": 85,
+      "windowFrames": 90
+    },
+    "clickDebounceMs": 300,
+    "minCutoff": 1.0,
+    "beta": 0.01
+  },
+  "motion": {
+    "size": [
+      64,
+      48
+    ],
+    "threshold": 12,
+    "minChangedRatio": 0.01
+  },
+  "pipeline": {
+    "searchFps": 5,
+    "idleAfterMs": 3000,
+    "unloadAfterMs": 60000
+  },
+  "face": {
+    "exclude": true,
+    "padSide": 0.25,
+    "padTop": 0.5,
+    "padBottom": 0.4,
+    "holdFrames": 10
+  },
+  "segment": {
+    "mode": "diff",
+    "diffThreshold": 25,
+    "minAreaRatio": 0.05,
+    "bgFrames": 30,
+    "maxFgRatio": 0.7,
+    "skin": {
+      "crMin": 133,
+      "crMax": 173,
+      "cbMin": 77,
+      "cbMax": 127
+    }
+  },
+  "gestureMapVersion": 1,
+  "actions": {
+    "dryRun": false
+  }
+}

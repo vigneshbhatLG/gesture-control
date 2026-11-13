@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+gestures.json
+logs/
+models/*.task
+models/*.tflite
+models/*.xml
+# camera snapshots from tools/probe_cameras.py
+cam*_*.jpg

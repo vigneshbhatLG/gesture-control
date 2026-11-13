@@ -1,0 +1,8 @@
+# Install into the project venv:  .venv\Scripts\python -m pip install -r requirements.txt
+# opencv-contrib (not plain opencv-python): MediaPipe depends on it, and in
+# OpenCV 5 the Haar face detector (classical version) lives in contrib.
+# Never install opencv-python alongside it - both provide cv2 and clash.
+mediapipe
+opencv-contrib-python
+numpy
+psutil
