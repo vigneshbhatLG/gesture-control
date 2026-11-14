@@ -1,12 +1,15 @@
 """Bind-menu state machine (GTA-style remap), no drawing here.
 
   b (while a gesture is matched) -> menu of actions
-  1..N bind, 0 unbind, Esc cancel
+  1..9 then a, c, d... bind, 0 unbind, Esc cancel
 
 Rule: one action per gesture (dict key). If the chosen action was bound to
 another gesture, that binding MOVES to this gesture (like a game's key swap).
 """
 from core.actions import ORDER, label
+
+# Menu keys: 1..9, then letters (0 = unbind). Bound to ORDER by position.
+KEYS = "123456789acdefghijklmnoprstuvwxyz"  # no b (opens menu) / q (quit)
 
 
 class Binder:
@@ -40,8 +43,9 @@ class Binder:
             self.gesture = None
             self.say(f'"{name}" unbound', now_ms)
             return True, True
-        if ord("1") <= k <= ord("9") and k - ord("1") < len(ORDER):
-            action = ORDER[k - ord("1")]
+        idx = KEYS.find(chr(k)) if 0 < k < 128 else -1
+        if 0 <= idx < len(ORDER):
+            action = ORDER[idx]
             moved = [g for g, a in gesture_map.items() if a == action and g != gid]
             for g in moved:
                 del gesture_map[g]
@@ -56,8 +60,9 @@ class Binder:
         if self.active:
             cur = label(gesture_map.get(self.gesture["id"]))
             out = [f'Bind "{self.gesture["name"]}" (now: {cur}) - press a number:']
-            row = "   ".join(f"{i + 1} {label(a)}" for i, a in enumerate(ORDER))
-            out.append(row)
+            items = [f"{KEYS[i]} {label(a)}" for i, a in enumerate(ORDER)]
+            for i in range(0, len(items), 5):  # 5 per line: fits the window
+                out.append("   ".join(items[i:i + 5]))
             out.append("0 unbind   Esc cancel")
             return out
         if now_ms < self.message_until:

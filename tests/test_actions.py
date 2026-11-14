@@ -37,6 +37,20 @@ check("rebind gesture to openYouTube", gmap == {"g_yt": "openYouTube"})
 b.start(YT)
 b.key(ord("0"), 0, gmap)
 check("0 unbinds", gmap == {})
+# 10 actions: keys 1..9 then letters
+SK = {"id": "g_sk", "name": "skip 10 sec"}
+RV = {"id": "g_rv", "name": "reverse 10 sec"}
+b.start(RV)
+b.key(ord("9"), 0, gmap)
+b.start(SK)
+b.key(ord("a"), 0, gmap)
+check("key 9 -> Back 10 s, key a -> Skip 10 s",
+      gmap == {"g_rv": "seekBack10", "g_sk": "seekForward10"}, str(gmap))
+check("seek actions fire once per hold (no repeat)",
+      not actions.repeats("seekBack10") and not actions.repeats("seekForward10"))
+check("seek actions run (dry run)", actions.run("seekBack10", True)
+      and actions.run("seekForward10", True))
+gmap.clear()
 b.start(UP)
 c, ch = b.key(ord("q"), 0, gmap)
 check("other keys swallowed while menu open (q doesn't quit)", c and not ch and b.active)

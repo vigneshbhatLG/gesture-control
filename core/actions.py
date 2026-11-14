@@ -44,6 +44,14 @@ ACTIONS = {
     # Only matched while pointer mode is active.
     "exitPointer": {"label": "Exit pointer",   "repeat": False,
                     "run": lambda: None, "tv": "(internal) hide pointer"},
+    # No Windows media key for seeking. YouTube: J / L = exactly 10 s back /
+    # forward (arrow keys are only 5 s there). Video window must be focused.
+    "seekBack10":    {"label": "Back 10 s",    "repeat": False,
+                      "run": lambda: _press(0x4A),  # J
+                      "tv": "media seek -10 s (remote REWIND in most apps)"},
+    "seekForward10": {"label": "Skip 10 s",    "repeat": False,
+                      "run": lambda: _press(0x4C),  # L
+                      "tv": "media seek +10 s (remote FASTFORWARD in most apps)"},
 }
 ORDER = list(ACTIONS)  # numbering used by the bind menu (1..N)
 

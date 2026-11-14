@@ -4,8 +4,8 @@ Living doc: what we're building, what's decided, where we are. Update it at the
 end of every working session. (Named CLAUDE.md so Claude Code loads it
 automatically when working in this folder.)
 
-Last updated: 2026-11-13 (steps 1–6 + R1 pointer mode done and confirmed live;
-awaiting user's next requirements)
+Last updated: 2026-11-14 (steps 1–6 + R1 pointer + R2 scroll confirmed live;
+R3 sensitivity + drag reverted at user request; awaiting next requirement)
 
 ---
 
@@ -104,14 +104,14 @@ tools/click_timing.py  per-click gap dip + interval → real taps vs jitter
 tests/                 synthetic tests, one file per module; run: .venv\Scripts\python tests\run_all.py
 ```
 
-**Tests** (2026-11-13: **104 pass**, 1 known limitation; exit code 0 = all good):
+**Tests** (2026-11-14: **107 pass**, 1 known limitation; exit code 0 = all good):
 
 | File | Covers | Count |
 |---|---|---|
 | test_pointer.py | One Euro filter, ☝️ activation + arming, motion, thumb-tap click, jitter, adaptive thresholds, exits, ✌️ joystick scroll | 44 |
 | test_trigger.py | palm arm, hold-to-fire, cooldown, repeat, dropout, timeout, fist disarm | 22 |
 | test_gestures.py | normalisation, matching, record checks (incl. reserved ✌️), persistence, recorder keys | 16 |
-| test_actions.py | bind menu (bind/move/unbind), per-action repeat, dispatch | 12 |
+| test_actions.py | bind menu (bind/move/unbind, letter keys), per-action repeat, dispatch, seek actions | 15 |
 | test_face.py | Haar cascade + face exclusion (classical) | 6 |
 | test_segment.py | classical segmentation + auto-exposure compensation | 4 (+1 known: +120 brightness saturation) |
 
@@ -119,7 +119,7 @@ They use fake hands / synthetic images — no camera needed. Run them after ever
 `run_all.py` counts a crashing script as a failure.
 
 `track.py` keys: `q` quit, `u` unload model, `r` record gesture (type name, Enter,
-hold gesture for 5 samples), `z` delete last gesture.
+hold gesture for 5 samples), `z` delete last gesture, `b` bind, `p` pointer on/off.
 
 **Gesture matching details:** normalise = wrist to origin, scale by wrist→middle
 knuckle (palm length), x × aspect, left hand mirrored (`mirrorLeftHand`).
@@ -356,7 +356,28 @@ check impact on what's built, agree order before coding.
 - **Not yet**: drag / long-press; resolution switch for TV distance (2–3 m, a finger is
   only a few px at 320×240); TV pointer injection API (ask platform team).
 
-#### R2 (2026-11-13): Scrolling up / down / sideways — built, waiting on live test
+#### R4 (2026-11-14): Skip / back 10 s — built, waiting on live test
+
+User recorded "skip 10 sec" (g_7abc5a, spread max 0.055) and "reverse 10 sec" (g_90b00a,
+max 0.078); closest other gesture 0.45 (reverse vs magic hands exit); no palm/fist/point
+conflicts. New actions `seekForward10` ("Skip 10 s") / `seekBack10` ("Back 10 s"), once
+per hold. Laptop: YouTube keys **L / J** (exactly 10 s; arrows are only 5 s), video window
+must be focused. TV: media seek ±10 s / remote FF-REW (confirm API). Bind menu now has 10
+actions → keys `1..9` then letters (`a`, `c`, `d`…; no `b`/`q`), shown 5 per line:
+9 = Back 10 s, a = Skip 10 s (existing numbers unchanged). Not bound yet — user binds via `b`.
+
+#### R3 (2026-11-14): Pointer sensitivity + click-and-drag — REVERTED (user request)
+
+Built: `pointerSensitivity` / `pointerClickSensitivity` 1..5 (keys +/- and ]/[), drag =
+thumb held in 0.4 s then move (button down/up), `Mouse.move` via mouse_event ABSOLUTE.
+User reported "not working" — but **every test ran on a stale `track.py` started 10:42,
+before the code existed** (old overlay text in screenshot; old log header). Python doesn't
+reload edited code. User then asked to revert everything → code restored to the R2 state
+(104 tests). **Lesson: after code changes, confirm the user restarted** (check
+`Win32_Process` CreationDate vs file mtimes, or the overlay/bottom-line text) before
+debugging. Design notes kept here in case it's wanted again later.
+
+#### R2 (2026-11-13): Scrolling up / down / sideways — DONE, confirmed live 2026-11-14
 
 **User decisions**: ✌️ **reserved** for scroll (not context-based) → user's ✌️ gesture
 "open youtube" (g_dd9c5e, 5/5 samples were ✌️) **deleted with its binding; user to
@@ -442,15 +463,14 @@ Original design notes:
   while pointing).
 
 Remaining roadmap (my recommended order):
-0. **Live-test R2 scroll** (last session: 49 real clicks + exit gesture used; scroll events
-   aren't printed, so unknown whether scroll was tried — user said "good" and stopped).
-   Then next requirement from the user (R3…). Tracker was stopped at end of session.
+0. ~~Live-test R2 scroll~~ user confirmed "everything working fine" (2026-11-14).
+   R3 reverted (2026-11-14). Next: requirement from the user.
 1. **TV footprint**: item 8 above (int8 + bare TFLite) — real numbers for platform team.
 2. **Robustness**: TV distance 2–3 m (may need higher camera res), one-finger-apart pair
    (✌️ vs 🤘), "too generic" check, re-record gestures with too-tight spread.
 3. **Motion gestures** (DTW): circle, wave, swipe.
 4. **Porting prep**: spec for the C++ service + Enact Settings screen.
 5. **"Perform gesture now"** capture flow for the Settings UI.
-6. Pointer extras: drag / long-press, higher resolution while pointing.
+6. Pointer extras: drag (R3 reverted), long-press / right-click, higher resolution while pointing.
 
 Housekeeping: git repo has **no commits yet** — offered a first commit (user to confirm).

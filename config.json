@@ -5,7 +5,9 @@
   "gestureMap": {
     "g_a34054": "volumeUp",
     "g_6def2f": "volumeDown",
-    "g_6efb5e": "exitPointer"
+    "g_6efb5e": "exitPointer",
+    "g_7abc5a": "seekForward10",
+    "g_90b00a": "seekBack10"
   },
   "camera": {
     "index": 1,
